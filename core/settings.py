@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-a!-^q$90+=nkzvs6(77^8jrg_v_%rmg&b@9-1vc6b^f=r)_r#=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['localhost', 'https://unmovers.herokuapp.com/',]
 
 
 # Application definition
@@ -125,30 +125,30 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-#postgres://utragmsnszecvr:2fd40eea9b3f63200b8a2d907149ab0193087714218a1dfddf04df1aa5a4bbc9@ec2-54-165-184-219.compute-1.amazonaws.com:5432/d90l2fs4nsllcg
+#postgres://:@:5432/
 # just in case: django.db.backends.postgresql_psycopg2
 #postgres://wdepcbgwjrrtpz:bb0469dda46191ec7192cb7b752aa62675c069a61f2e1118df12effc2eb30d80@ec2-54-165-178-178.compute-1.amazonaws.com:5432/d704n3hpju61um
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'd704n3hpju61um',
-#         'USER': 'wdepcbgwjrrtpz',
-#         'PASSWORD': 'bb0469dda46191ec7192cb7b752aa62675c069a61f2e1118df12effc2eb30d80',
-#         'HOST':'ec2-54-165-178-178.compute-1.amazonaws.com',
-#         'PORT': '5432'
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'moveit',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST':'localhost',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dbvle56hq0ttd4',
+        'USER': 'ajopygvlwshomy',
+        'PASSWORD': 'b79bb37c458a0533cfc57a5391282b7892698ead5e9479582c58602388bac73a',
+        'HOST':'ec2-34-198-186-145.compute-1.amazonaws.com',
         'PORT': '5432'
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'moveit',
+#         'USER': 'postgres',
+#         'PASSWORD': '12345',
+#         'HOST':'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 
 # Password validation
