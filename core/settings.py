@@ -187,7 +187,8 @@ USE_TZ = True
 
 
 STATIC_HOST = os.environ.get("DJANGO_STATIC_HOST", "")
-STATIC_URL = '/static/'
+#STATIC_HOST = BASE_DIR / "staticfiles"
+STATIC_URL = STATIC_HOST + '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
