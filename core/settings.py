@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import django_heroku
 import os 
+from google.oauth2 import service_account
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -190,9 +191,21 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# media 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'media/'
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, 'credentials.json')
+)
+
+DEFAULT_FILE_STORAGE = 'core.gcloud.GoogleCloudMediaFileStorage'
+GS_PROJECT_ID = 'prefab-surfer-351621'
+GS_BUCKET_NAME = 'unmovers_media'
+MEDIA_ROOT = 'media/'
+UPLOAD_ROOT = 'media/uploads/'
+MEDIA_URL = 'https//storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+
+
+
+
+
 
 
 
