@@ -14,13 +14,13 @@ from .managers import CustomAccountManager
 
 # global functions 
 def upload_to(instance, filename):
-    return 'profile_pics/{filename}'.format(filename = filename)
+    return '/{filename}'.format(filename = filename)
 
 def upload_id_copy_to(instance, filename):
-    return 'ids/{filename}'.format(filename = filename)
+    return '/{filename}'.format(filename = filename)
 
 def upload_drivers_license_copy_to(instance, filename):
-    return 'driver_license/{filename}'.format(filename = filename)
+    return '/{filename}'.format(filename = filename)
 
 # Create your models here.
 class NewUser(AbstractBaseUser, PermissionsMixin):
@@ -71,11 +71,11 @@ class UserProfile(models.Model):
     use_moveit_for = models.CharField(max_length=150,null = True, blank=True, default='private')
     
     # files 
-    pdf_id_copy = models.FileField(_("pdf_id_copy"), 
+    pdf_id_copy = models.FileField( 
                                    upload_to=upload_id_copy_to,
                                    null = True, blank=True)
     
-    pdf_drivers_license_copy = models.FileField(_("pdf_drivers_license_copy"),
+    pdf_drivers_license_copy = models.FileField(
                                                 upload_to=upload_drivers_license_copy_to,
                                                 blank=True,
                                                 null = True)
