@@ -63,7 +63,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(),
                                 on_delete=models.CASCADE,
                                 null=True)
-    image = models.ImageField(_("image"), upload_to=upload_to, 
+    image = models.ImageField(upload_to=upload_to, 
                                             default = 'profile_pics/default.jpg')
   
     # variables 

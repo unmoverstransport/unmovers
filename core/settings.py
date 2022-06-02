@@ -186,29 +186,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-
-STATIC_HOST = os.environ.get("DJANGO_STATIC_HOST", "")
-#STATIC_HOST = BASE_DIR / "staticfiles"
-STATIC_URL = STATIC_HOST + '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# media 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
+
+
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+
+DROPBOX_CONSUMER_KEY = 'm51wzbrzt06kzrr'
+DROPBOX_CONSUMER_SECRET = 'mjnwqmya3ns40pu'
+#DROPBOX_ACCESS_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
+DROPBOX_OAUTH2_TOKEN = 'sl.BIxM81jtGfPKKFQ_DvLN1S-1gjz-3JlX86xtW4egcPwcNOYnikOQLMcpLrVT450aHbWdoysMNnT_NnvBq2nzGe1v0w84LvuarQcKqYp5P-myF96aeycEJaDkZSWJIYRe-ZscHfh0YarB'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DROPBOX_CONSUMER_KEY = 'khpqtd5s2yj82v8'
-DROPBOX_CONSUMER_SECRET = 'n6fe49pa67dinhb'
-#DROPBOX_ACCESS_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
-DROPBOX_OAUTH2_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
-DROPBOX_ROOT_PATH = '/gallary'
-
 
 
 SIMPLE_JWT = {
