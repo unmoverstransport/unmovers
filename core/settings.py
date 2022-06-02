@@ -195,14 +195,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
 
 
-DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-
-DROPBOX_CONSUMER_KEY = 'm51wzbrzt06kzrr'
-DROPBOX_CONSUMER_SECRET = 'mjnwqmya3ns40pu'
-#DROPBOX_ACCESS_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
-DROPBOX_OAUTH2_TOKEN = 'sl.BIxM81jtGfPKKFQ_DvLN1S-1gjz-3JlX86xtW4egcPwcNOYnikOQLMcpLrVT450aHbWdoysMNnT_NnvBq2nzGe1v0w84LvuarQcKqYp5P-myF96aeycEJaDkZSWJIYRe-ZscHfh0YarB'
-
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

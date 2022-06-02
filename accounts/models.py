@@ -14,13 +14,13 @@ from .managers import CustomAccountManager
 
 # global functions 
 def upload_to(instance, filename):
-    return '/{filename}'.format(filename = filename)
+    return 'gallary/{filename}'.format(filename = filename)
 
 def upload_id_copy_to(instance, filename):
-    return '/{filename}'.format(filename = filename)
+    return 'gallary/{filename}'.format(filename = filename)
 
 def upload_drivers_license_copy_to(instance, filename):
-    return '/{filename}'.format(filename = filename)
+    return 'gallary/{filename}'.format(filename = filename)
 
 # Create your models here.
 class NewUser(AbstractBaseUser, PermissionsMixin):
