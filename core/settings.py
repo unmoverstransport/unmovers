@@ -200,7 +200,7 @@ GS_PROJECT_ID = 'prefab-surfer-351621'
 GS_BUCKET_NAME = 'unmovers_media'
 MEDIA_ROOT = 'media/'
 UPLOAD_ROOT = 'media/uploads/'
-MEDIA_URL = 'https//storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 
 
 
