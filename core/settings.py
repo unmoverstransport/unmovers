@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'storages',
     
     # custom apps
     'accounts.apps.AccountsConfig',
@@ -205,6 +206,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 DROPBOX_CONSUMER_KEY = 'khpqtd5s2yj82v8'
 DROPBOX_CONSUMER_SECRET = 'n6fe49pa67dinhb'
 DROPBOX_ACCESS_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
+DROPBOX_OAUTH2_TOKEN = 'sl.BIwoH7kttAAtVu0Qxbx8AUoImi34-duNu9ALsTKS_Y5_UIxISJ1hu5lCoiUQI7Jho-8d2RtXOBXLgfm4Xu5TIRQOpGjAcRrQD1UO67Dy3pmEYv3CMQ2SxwD0nRSh6pz_rd85Czh7Tec'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
