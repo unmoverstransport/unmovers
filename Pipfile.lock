@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "36309091dcc347974499a205b6bcd84ad221d0b3a1eaf6383c4a1316e8b4c92e"
+            "sha256": "5db1db0f18fb075c8fd618c84c68b6106dfaf0331e64a0a32935b1ea698c53a0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -88,6 +88,17 @@
             "index": "pypi",
             "version": "==0.3.1"
         },
+        "django-storages": {
+            "extras": [
+                "dropbox"
+            ],
+            "hashes": [
+                "sha256:204a99f218b747c46edbfeeb1310d357f83f90fa6a6024d8d0a3f422570cee84",
+                "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"
+            ],
+            "index": "pypi",
+            "version": "==1.12.3"
+        },
         "djangorestframework": {
             "hashes": [
                 "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee",
@@ -103,6 +114,14 @@
             ],
             "index": "pypi",
             "version": "==5.2.0"
+        },
+        "dropbox": {
+            "hashes": [
+                "sha256:393a99dfe30d42fd73c265b9b7d24bb21c9a961739cd097c3541e709eb2a209c",
+                "sha256:5f924102fd6464def81573320c6aa4ea9cd3368e1b1c13d838403dd4c9ffc919",
+                "sha256:f483d65b702775b9abf7b9328f702c68c6397fc01770477c6ddbfb1d858a5bcf"
+            ],
+            "version": "==11.31.0"
         },
         "googlemaps": {
             "hashes": [
@@ -187,6 +206,13 @@
             "index": "pypi",
             "version": "==9.1.1"
         },
+        "ply": {
+            "hashes": [
+                "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3",
+                "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"
+            ],
+            "version": "==3.11"
+        },
         "psycopg2": {
             "hashes": [
                 "sha256:06f32425949bd5fe8f625c49f17ebb9784e1e4fe928b7cce72edc36fb68e4c0c",
@@ -236,6 +262,14 @@
             "markers": "python_version >= '3.7'",
             "version": "==62.3.2"
         },
+        "six": {
+            "hashes": [
+                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
+                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==1.16.0"
+        },
         "spatialite": {
             "hashes": [
                 "sha256:3124f643688c8ba4e2ff200ef401cf7b57caa44db666cb78519784f98f662982",
@@ -251,6 +285,14 @@
             ],
             "index": "pypi",
             "version": "==0.4.2"
+        },
+        "stone": {
+            "hashes": [
+                "sha256:4ef0397512f609757975f7ec09b35639d72ba7e3e17ce4ddf399578346b4cb50",
+                "sha256:cd2f7f9056fc39b16c8fd46a26971dc5ccd30b5c2c246566cd2c0dd27ff96609",
+                "sha256:e15866fad249c11a963cce3bdbed37758f2e88c8ff4898616bc0caeb1e216047"
+            ],
+            "version": "==3.3.1"
         },
         "tzdata": {
             "hashes": [

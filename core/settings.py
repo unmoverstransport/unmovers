@@ -201,6 +201,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+DROPBOX_CONSUMER_KEY = 'khpqtd5s2yj82v8'
+DROPBOX_CONSUMER_SECRET = 'n6fe49pa67dinhb'
+DROPBOX_ACCESS_TOKEN = 'sl.BIySHlJR6P64K3opwkYfAKMMGLCV8nS-LPo6hkXxApClpLjbIvRbSdf12qQS3bpYWlWLLYvKatGGgAZK2pMCWsRg_n2s15TavKF1kGirrtmI2rB0ZQ5WO4vldi7gEoAMURSjX9A'
+DROPBOX_OAUTH2_TOKEN = 'sl.BIySHlJR6P64K3opwkYfAKMMGLCV8nS-LPo6hkXxApClpLjbIvRbSdf12qQS3bpYWlWLLYvKatGGgAZK2pMCWsRg_n2s15TavKF1kGirrtmI2rB0ZQ5WO4vldi7gEoAMURSjX9A'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
