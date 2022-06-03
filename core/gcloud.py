@@ -10,5 +10,4 @@ class GoogleCloudMediaFileStorage(GoogleCloudStorage):
     bucket_name = setting('GS_BUCKET_NAME')
     
     def url(self, name):
-        
         return urljoin(settings.MEDIA_URL, name)

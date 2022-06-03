@@ -39,9 +39,7 @@ class GetCompleteUserProfile(ModelSerializer):
         return _user.data
     
     def get_image(self, obj):
-        request = self.context.get('request')
-        if request != None:
-            return request.build_absolute_uri(obj.image.url)
+    
         return obj.image.url
     
 
@@ -109,9 +107,6 @@ class BookingUserProfileSerializer(ModelSerializer):
         return _user.data
     
     def get_image(self, obj):
-        request = self.context.get('request')
-        if request != None:
-            return request.build_absolute_uri(obj.image.url)
         return obj.image.url
     
 
