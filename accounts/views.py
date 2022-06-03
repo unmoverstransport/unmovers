@@ -29,14 +29,23 @@ class AccountUserCreate(APIView):
     
     def post(self, request, *args, **kwargs):
         
-        print(request.data)
-        
+        # create payload 
+        payload = dict()
         # register serializer 
         reg_serializer = RegisterSerializer(data = request.data)
         if reg_serializer.is_valid(raise_exception=True):
             new_user = reg_serializer.save()
             if new_user:
-                return Response(status=status.HTTP_201_CREATED)    
+                # set payload 
+                payload['status'] = status.HTTP_201_CREATED
+                payload['message'] = 'account successfully created'
+                return Response(status=status.HTTP_201_CREATED)
+            
+            # set here
+            payload['status'] = status.HTTP_400_BAD_REQUEST
+            payload['message'] = 'was unable to create user for some reason'
+            
+            return Response(payload, status= status.HTTP_400_BAD_REQUEST)  
         return Response(reg_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class GetFullUserProfileView(APIView):
