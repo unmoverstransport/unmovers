@@ -9,7 +9,7 @@ from rest_framework import generics
 from rest_framework.authentication import get_user_model
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, OutstandingToken, BlacklistedToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 
@@ -102,9 +102,13 @@ class BlackListTokenView(APIView):
     
     def post(self, request, *args, **kwargs):
         try:
-            refresh_token = request.data.get('refresh_token')
-            token = RefreshToken(refresh_token)
-            token.blacklist()
+            user = request.user 
+            tokens = OutstandingToken.objects.filter(user_id = user.id)
+            for token in tokens:
+                t, _ = BlacklistedToken.objects.get_or_create(token = token)
+            # refresh_token = request.data.get('refresh_token')
+            # token = RefreshToken(refresh_token)
+            # token.blacklist()
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
