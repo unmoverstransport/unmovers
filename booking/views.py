@@ -1,7 +1,6 @@
 
 #from tokenize import Token
-from ast import Num
-import stat
+
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 import json
@@ -16,6 +15,9 @@ from .serializers import BookingSerializer
 
 from django.utils.translation import gettext_lazy as _
 import googlemaps
+
+#// we need the date time module 
+from datetime import date
 
 
 #from rest_framework_simplejwt.authentication import get_user_model
@@ -71,6 +73,8 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
         pickup_date = request.data.get('pickup_date') or None 
         pickup_time = request.data.get('pickup_time') or None 
         quote_price = request.data.get('quote_price') or None
+        mid_month_discount = request.data.get('mid_month_discount')
+        loyal_customer_discount = request.data.get('loyal_customer_discount') 
         distance_km = request.data.get('distance') or None 
         payment_option = request.data.get('payment_option') 
         carry_floor = request.data.get('carry_floor')  
@@ -84,10 +88,23 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
         #// most importantly routes
         routes = request.data.get('routes') or None 
         
+        if(loggedin_user is None):
+            #// this means the token is invalid 
+            errorPayload = dict()
+            
+            #// set error 
+            errorPayload['error'] = 'Token is invalid or expired, please re-signin'
+            errorPayload['status'] = status.HTTP_401_UNAUTHORIZED
+            
+            #// return response 
+            return Response(errorPayload, status=status.HTTP_401_UNAUTHORIZED)
+
         #// check sent values are none or valid 
         if(routes is None or pickup_date is None or 
                         pickup_time is None or vehicle_type is None 
-                                or quote_price is None or distance_km is None):
+                                or quote_price is None or distance_km is None
+                                    or mid_month_discount is None 
+                                        or loyal_customer_discount is None):
 
             #set the payload and
             payload['error_message'] = 'booking routes/pickup/quote price, date or pickup time cannot be null'
@@ -102,6 +119,8 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                         pickup_time = pickup_time,
                         payment_option = payment_option,
                         quote_price = quote_price,
+                        mid_month_discount = mid_month_discount,
+                        loyal_customer_discount = loyal_customer_discount,
                         distance_km = distance_km,
                         carry_floor = carry_floor,
                         vehicle_type = vehicle_type,
@@ -258,7 +277,37 @@ class UpdateBookingAPIView(generics.UpdateAPIView):
     
 
 class GenerateCustomerQuote(APIView):
-    
+
+
+    def _mid_month_discount(self, quotePrice):
+        
+        mid_month_discount = 0.0
+        
+        #// quote price threshold 
+        threshold = 450 #// rands 
+        
+        #// this method must return a boolean 
+        if(quotePrice <= threshold):
+            return (quotePrice, mid_month_discount)
+        
+        #// other wise check the date 
+        #// create getter for todays date 
+        today = date.today()
+        
+        #// check if date falls within the bounds for discount 
+        min_day_threshold = 5 #// day
+        max_day_threshold = 25 #// day 
+        if(today.day >= min_day_threshold and today.day <= max_day_threshold):
+            
+            #// calculate the discount 
+            discount = 10 #// percent 
+            mid_month_discount = quotePrice*(discount/100.0)
+            newQuotePrice = quotePrice - mid_month_discount
+            
+            #// return new quote price 
+            return (newQuotePrice, mid_month_discount)
+            
+        return (quotePrice, mid_month_discount)
 
 
     def _carry_floors_charge(self, carry_floors):
@@ -266,13 +315,13 @@ class GenerateCustomerQuote(APIView):
         # carry floors if less or equal to zero
         if (carry_floors <= 0): return 0
         return 5*carry_floors + 15 
-        
-        
+    
+    
     # create method 
     def _generateQuotePrice(self, distance, vehicle_type, 
                                 carry_floors, additional_helpers):
         
-            
+        
         # constance
         oneTon_vehicle = 1.0 #// tons
         oneAndHalfTon_vehicle = 1.5 #// tons
@@ -291,13 +340,17 @@ class GenerateCustomerQuote(APIView):
         price_per_kilometer_15_ton = 12 #// rands 
         
         #// these values will change 
-        base_amount_2_ton = 500
-        price_per_kilometer_2_ton = 14
+        base_amount_2_ton = 400
+        price_per_kilometer_2_ton = 12
         
         # long distance travel 
         price_per_kilometer_long_distance = 14 #// rands 
         sleeping_allowance = 400 #// rands 
         toll_gate_fee = 10 #// rands 
+        
+        #// 
+        two_ton_trailer_fee = 500 #// rands
+        two_ton_helper_fee_extra = 10 #// ten rands extra for helper fee
         
         #// price quote 
         priceQuote = None
@@ -334,8 +387,8 @@ class GenerateCustomerQuote(APIView):
                 priceQuote = (
                             (carry_floor_charge) +
                             (distance * price_per_kilometer_2_ton) +
-                            (additional_helpers*helper_fee) +
-                            (toll_gate_fee + base_amount_2_ton) 
+                            (additional_helpers*(helper_fee + two_ton_helper_fee_extra)) +
+                            (toll_gate_fee + base_amount_2_ton + two_ton_trailer_fee) 
                             )
                 
                 #// return value 
@@ -373,8 +426,8 @@ class GenerateCustomerQuote(APIView):
                 priceQuote = (
                             (carry_floor_charge) + 
                             (distance * price_per_kilometer_long_distance) +
-                            (additional_helpers * helper_fee) +
-                            (toll_gate_fee + base_amount_2_ton)
+                            (additional_helpers*(helper_fee + two_ton_helper_fee_extra)) +
+                            (toll_gate_fee + base_amount_2_ton + two_ton_trailer_fee) 
                             )
                 #// return 
                 return priceQuote
@@ -406,17 +459,18 @@ class GenerateCustomerQuote(APIView):
                 return priceQuote
             
             # handle 2 ton for distance greater than 1500
+         
             elif(float(vehicle_type) == twoTon_vehicle):
                 priceQuote = (
                             (carry_floor_charge) + 
                             (distance * price_per_kilometer_long_distance) + 
-                            (additional_helpers * helper_fee) +
-                            (toll_gate_fee + base_amount_2_ton + sleeping_allowance)
+                            (additional_helpers * (helper_fee + two_ton_helper_fee_extra)) +
+                            (toll_gate_fee + base_amount_2_ton + sleeping_allowance + two_ton_trailer_fee)
                             )
                 
                 #// return 
                 return priceQuote
-
+            
     def post(self, request, *args, **kwargs):
         
         #// payload 
@@ -468,14 +522,22 @@ class GenerateCustomerQuote(APIView):
                                                        carry_floors, 
                                                        additional_helpers)
      
+        
+        #// here we need to check for discount 
+        quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice) #// rands 
+        
+        #// temporary loyal_customer 
+        loyal_customer_discount = 0.0
+        
         payload['message'] = 'successfully generated quote'
-        payload['generate_quote_price'] = float(generatedQuotePrice)
+        payload['generate_quote_price'] = round(float(quotePrice), 2)
+        payload['mid_month_discount'] = round(float(discountPrice), 2)
+        payload['loyal_customer_discount'] = round(float(loyal_customer_discount), 2)
         payload['status_code'] = status.HTTP_200_OK
         
         return Response(payload, status= status.HTTP_200_OK)
-    
+
 #// testing 
- 
 class GenerateDistanceBetweenTwoLocations(APIView):
 
     def post(self, request, *args, **kwargs):

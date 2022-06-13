@@ -54,6 +54,8 @@ class Booking(models.Model):
     drivers_note = models.TextField(default= 'No note left', max_length = 1000, null = True, blank = True)
     driver_rating = models.IntegerField(default = 0, blank = True)
     quote_price = models.FloatField(default = 1.0, null = True, blank = True)
+    mid_month_discount = models.FloatField(default = 0.0, null = True, blank = True)
+    loyal_customer_discount = models.FloatField(default = 0.0, null = True, blank = True)
     distance_km = models.FloatField(default = 0.0, null = True, blank = True)
     
     routes = models.ManyToManyField(LocationModel, blank = True)

@@ -37,6 +37,8 @@ class BookingSerializer(serializers.ModelSerializer):
             'pickup_date',
             'pickup_time',
             'quote_price',
+            'mid_month_discount',
+            'loyal_customer_discount',
             'distance_km',
             'retrieve_url',
             'edit_url',
