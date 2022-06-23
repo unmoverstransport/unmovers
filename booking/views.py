@@ -310,166 +310,93 @@ class GenerateCustomerQuote(APIView):
         return (quotePrice, mid_month_discount)
 
 
-    def _carry_floors_charge(self, carry_floors):
+    #// hadle 1.0 TONS CALCULATIONS
+    def one_ton_stairs(self, carry_floors):
         
-        # carry floors if less or equal to zero
-        if (carry_floors <= 0): return 0
-        return 5*carry_floors + 15 
-    
-    
-    # create method 
-    def _generateQuotePrice(self, distance, vehicle_type, 
-                                carry_floors, additional_helpers):
-        
-        
-        # constance
-        oneTon_vehicle = 1.0 #// tons
-        oneAndHalfTon_vehicle = 1.5 #// tons
-        twoTon_vehicle = 2 #// ton/s
-        
-        #// constant helper fee 
-        helper_fee = 90 #//rands 
-        carry_floor_charge = self._carry_floors_charge(carry_floors)
-        
-        # variables per 1 ton 
-        base_amount_1_ton = 300 #// rands 
-        price_per_kilometer_1_ton = 10 #// rands 
-        
-        # variable per 1.5 ton 
-        base_amount_per_15_ton = 400 #// rands 
-        price_per_kilometer_15_ton = 12 #// rands 
-        
-        #// these values will change 
-        base_amount_2_ton = 400
-        price_per_kilometer_2_ton = 12
-        
-        # long distance travel 
-        price_per_kilometer_long_distance = 14 #// rands 
-        sleeping_allowance = 400 #// rands 
-        toll_gate_fee = 10 #// rands 
-        
-        #// 
-        two_ton_trailer_fee = 500 #// rands
-        two_ton_helper_fee_extra = 10 #// ten rands extra for helper fee
-        
-        #// price quote 
-        priceQuote = None
-        
-        #// here we compute 
-        if(distance <= 300):
-            
-            #// handle 1 ton 
-            if(float(vehicle_type) == oneTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance*price_per_kilometer_1_ton) + 
-                            (additional_helpers*helper_fee) + 
-                            (toll_gate_fee + base_amount_1_ton )
-                            )
-                        
-                #// done computing return value 
-                return priceQuote
-            
-            #// handle 1.5 tons 
-            elif(float(vehicle_type) == oneAndHalfTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance*price_per_kilometer_15_ton) + 
-                            (additional_helpers*helper_fee) + 
-                            (toll_gate_fee + base_amount_per_15_ton)
-                            )
-                
-                #// we are done 
-                return priceQuote
-            
-            #// handle two tons 
-            elif(float(vehicle_type) == twoTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) +
-                            (distance * price_per_kilometer_2_ton) +
-                            (additional_helpers*(helper_fee + two_ton_helper_fee_extra)) +
-                            (toll_gate_fee + base_amount_2_ton + two_ton_trailer_fee) 
-                            )
-                
-                #// return value 
-                return priceQuote
-                
+        #// check 
+        if(carry_floors <= 0):return 0
+        return (5*carry_floors + 15)
 
-        elif(distance> 300 and distance <= 1500):
-            
-            #// handle 1 ton for long distance 
-            if(float(vehicle_type) == oneTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) + 
-                            (additional_helpers * helper_fee) + 
-                            (toll_gate_fee + base_amount_1_ton)
-                            )
-                
-                #// return 
-                return priceQuote
-            
-            #// handle 1.5 ton for long distance 
-            elif(float(vehicle_type) == oneAndHalfTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) +
-                            (additional_helpers * helper_fee) +
-                            (toll_gate_fee + base_amount_per_15_ton)
-                            )
-                
-                #// return 
-                return priceQuote
-            
-            #// handle 2 ton for long distance 
-            elif(float(vehicle_type) == twoTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) +
-                            (additional_helpers*(helper_fee + two_ton_helper_fee_extra)) +
-                            (toll_gate_fee + base_amount_2_ton + two_ton_trailer_fee) 
-                            )
-                #// return 
-                return priceQuote
-                
-            
-        else: 
-            # handle 1 ton for distance greater than 1500
-            if(float(vehicle_type) == oneTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) + 
-                            (additional_helpers * helper_fee) +
-                            (toll_gate_fee + base_amount_1_ton+ sleeping_allowance)
-                            )
-                
-                #// return 
-                return priceQuote
-            
-            # handle 1.5 ton for distance greater than 1500
-            elif(float(vehicle_type) == oneAndHalfTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) + 
-                            (additional_helpers * helper_fee) +
-                            (toll_gate_fee + base_amount_per_15_ton + sleeping_allowance)
-                            )
-                
-                # return 
-                return priceQuote
-            
-            # handle 2 ton for distance greater than 1500
-         
-            elif(float(vehicle_type) == twoTon_vehicle):
-                priceQuote = (
-                            (carry_floor_charge) + 
-                            (distance * price_per_kilometer_long_distance) + 
-                            (additional_helpers * (helper_fee + two_ton_helper_fee_extra)) +
-                            (toll_gate_fee + base_amount_2_ton + sleeping_allowance + two_ton_trailer_fee)
-                            )
-                
-                #// return 
-                return priceQuote
+    def one_ton(self, distance, carry_floors, additional_helpers):
+        
+        # set variables 
+        base_amount = 430.0 #// rands (R)
+        helper_fee = 90.0 #// rands (R)
+        stairs_fee = self.one_ton_stairs(carry_floors) #// rands (R)
+        price_per_km = 10.0 #// rands (R)
+        tall_gate_fee = 10.0
+
+        quotePrice = (
+            (base_amount + tall_gate_fee) +  #// base + tall 
+            (price_per_km*distance) +  #// petrol fee price_km x distance
+            (stairs_fee) + #// stairs to carry 
+            (helper_fee*additional_helpers)) #// helper fee
+        
+        return quotePrice
+
+
+    #// hadle 1.0 TONS CALCULATIONS
+    def onehalf_ton_stairs(self, carry_floors):
+        
+        if(carry_floors <= 0): return 0
+        return (5*carry_floors + 25)
+
+    def onehalf_ton(self, distance, carry_floors, additional_helpers):
+        
+        base_amount = 485.0 #// rands (R)
+        helper_fee = 100.0 #// rands (R)
+        stairs_fee = self.onehalf_ton_stairs(carry_floors) #// rands (R)
+        price_per_km = 12.0 #// rands (R)
+        tall_gate_fee = 10.0
+
+        quotePrice = (
+            (base_amount + tall_gate_fee) +  #// base + tall 
+            (price_per_km*distance) +  #// petrol fee price_km x distance
+            (stairs_fee) + #// stairs to carry 
+            (helper_fee*additional_helpers)) #// helper fee
+        
+        return quotePrice
+
+    #// handle 2.0 TONS CALCULATIONS
+    def two_ton_stairs(self, carry_floors):
+        
+        if(carry_floors <= 0): return 0
+        return (5*carry_floors + 35)
+
+    def two_ton(self, distance, carry_floors, additional_helpers):
+
+        base_amount = 640.0 #// rands (R)
+        helper_fee = 120.0 #// rands (R)
+        stairs_fee = self.two_ton_stairs(carry_floors) #// rands (R)
+        price_per_km = 14.0 #// rands (R)
+        tall_gate_fee = 10.0
+
+        quotePrice = (
+            (base_amount + tall_gate_fee) +  #// base + tall 
+            (price_per_km*distance) +  #// petrol fee price_km x distance
+            (stairs_fee) + #// stairs to carry 
+            (helper_fee*additional_helpers)) #// helper fee
+        
+        return quotePrice
+
+    # generate quote 
+    def _generateQuotePrice(self, distance, carry_floors, additional_helpers, vehicle_type):
+        
+        vehicle_one = 1.0 #// one ton
+        vehicle_two = 1.5 #// 1.5 tons 
+        vehicle_three = 2.0 #// 2.0 tons 
+        
+        if(float(vehicle_type) == vehicle_one):
+            quotePrice = self.one_ton(distance, carry_floors, additional_helpers)
+            return quotePrice
+        elif(float(vehicle_type) == vehicle_two):
+            quotePrice = self.onehalf_ton(distance, carry_floors, additional_helpers)
+            return quotePrice
+        elif(float(vehicle_type) == vehicle_three):
+            quotePrice = self.two_ton(distance, carry_floors, additional_helpers)
+            return quotePrice
+        
+        
             
     def post(self, request, *args, **kwargs):
         
@@ -516,12 +443,11 @@ class GenerateCustomerQuote(APIView):
             # response to the user 
             return Response(payload, status= status.HTTP_400_BAD_REQUEST)
         
-        # generate the quote 
+        # generate the quote self, distance, carry_floors, additional_helpers, vehicle_type
         generatedQuotePrice = self._generateQuotePrice(distance, 
-                                                       vehicle_type,
-                                                       carry_floors, 
-                                                       additional_helpers)
-     
+                                                       carry_floors,
+                                                       additional_helpers, 
+                                                       vehicle_type)
         
         #// here we need to check for discount 
         quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice) #// rands 

@@ -23,6 +23,23 @@ from .serializers import (GetCompleteUserProfile,
                         UpdateUserSerializer, 
                         UserProfileSerializer)
 
+
+#// this is to retrieve user model for a specific user 
+class GetUserAccountAPIView(APIView):
+    
+    permission_classes =  [IsAuthenticated,];
+    
+    def get(self, request, *args, **kwargs):
+        
+        # current User
+        user = request.user
+        user_model = get_object_or_404(get_user_model(), pk = user.pk)
+        
+        #// serialize data 
+        user_model_serializer  = NewUserSerializer(user_model)
+        return Response(user_model_serializer.data, status = status.HTTP_200_OK)
+
+
 class AccountUserCreate(APIView):
     
     permission_classes = [AllowAny]

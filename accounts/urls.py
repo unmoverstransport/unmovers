@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/update/userprofile/', views.AccountProfileUpdateAPIView.as_view(), name= 'update-profile'),
     path('api/update/user/', views.AccountUserUpdateAPIView.as_view(), name = 'update-user'),
     path('api/get/user/', views.GetFullUserProfileView.as_view(), name = 'get-userprofile'),
+    path('api/get/user-account/', views.GetUserAccountAPIView.as_view(), name = 'user-account'),
     # these are for the stuff 
     path('api/drivers/', views.DriverListAPIView.as_view(), name = 'drivers-view'),
     path("api/driver/<int:pk>/update/", views.DriverUpdateAPIView.as_view(), name="update-driver"),
