@@ -84,6 +84,7 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
         additional_helpers = request.data.get('additional_helpers') 
         booking_completed = request.data.get('booking_completed')
         booking_cancelled = request.data.get('booking_cancelled') 
+        did_apply_loyal_discount = request.data.get('did_apply_loyal_discount')
         
         
         #// most importantly routes
@@ -108,9 +109,29 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                                         or loyal_customer_discount is None):
 
             #set the payload and
-            payload['error_message'] = 'booking routes/pickup/quote price, date or pickup time cannot be null'
+            payload['error_message'] = 'booking routes|pickup|quote-price, date or pickup time cannot be null'
             return Response(payload, status= status.HTTP_400_BAD_REQUEST) 
         
+        
+                
+        #// here we need to check if discount was added 
+        print('did add loyal discount', did_apply_loyal_discount)
+        return_customer_discount = loyal_customer_discount
+        q_price = quote_price 
+        if(did_apply_loyal_discount == False):
+            #// check if customer qualifies for discount 
+            customer_bs = Booking.objects\
+                                    .filter(booker = self.request.user)\
+                                    .order_by('-created_at')
+                                    
+            if(len(customer_bs) >= 3):
+                percentage = 10 #// percent %
+                divider  = 100 #// percent 
+                
+                #// new price math.ceil(q*100)/100
+                q_price = quote_price*((divider - percentage)/(divider))
+                return_customer_discount = quote_price - q_price
+                
         #// try and save the booking 
         try:
             #//now we need to save the booking 
@@ -119,9 +140,9 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                         pickup_date = pickup_date,
                         pickup_time = pickup_time,
                         payment_option = payment_option,
-                        quote_price = quote_price,
-                        mid_month_discount = mid_month_discount,
-                        loyal_customer_discount = loyal_customer_discount,
+                        quote_price = math.ceil(q_price*100)/100,
+                        mid_month_discount =  math.ceil(mid_month_discount*100)/100,
+                        loyal_customer_discount =math.ceil(return_customer_discount*100)/100,
                         distance_km = distance_km,
                         carry_floor = carry_floor,
                         vehicle_type = vehicle_type,
@@ -334,10 +355,10 @@ class GenerateCustomerQuote(APIView):
                     #// new price 
                     quoteP = quotePrice*((divider - percentage)/(divider))
                     loyalC = quotePrice - quoteP
-                    return (quoteP, loyalC)
+                    return (quoteP, loyalC, True)
                 
         #other wise 
-        return (quotePrice, 0.0)
+        return (quotePrice, 0.0, False)
   
 
 
@@ -486,13 +507,14 @@ class GenerateCustomerQuote(APIView):
         quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice) #// rands 
         
         #// generate loyal customer discount 
-        qp, loyaldiscount = self.generateLoyalCustomerDiscount(quotePrice)
+        qp, loyaldiscount, did_apply_loyal_discount = self.generateLoyalCustomerDiscount(quotePrice)
         
         # set payload 
         payload['message'] = 'successfully generated quote'
         payload['generate_quote_price'] =  math.ceil(qp*100)/100 #round(float(q), 2)
         payload['mid_month_discount'] =  math.ceil(discountPrice*100)/100 #round(float(discountPrice), 2)
         payload['loyal_customer_discount'] =  math.ceil(loyaldiscount*100)/100 # round(float(loyaldiscount), 2)
+        payload['did_apply_loyal_discount'] = did_apply_loyal_discount
         payload['status_code'] = status.HTTP_200_OK
         
         
