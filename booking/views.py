@@ -15,6 +15,7 @@ from .serializers import BookingSerializer
 
 from django.utils.translation import gettext_lazy as _
 import googlemaps
+import math
 
 #// we need the date time module 
 from datetime import date
@@ -313,6 +314,31 @@ class GenerateCustomerQuote(APIView):
         
         # return 
         return (newQuotePrice, mid_month_discount)
+    
+    def generateLoyalCustomerDiscount(self, quotePrice):
+        
+        #// if customer is logged in 
+        if(self.request.user.id != None):                      
+            customer_bs = Booking.objects\
+                                    .filter(booker = self.request.user)\
+                                    .order_by('-created_at')
+                                  
+            if(customer_bs != None):
+                # here we check when the last time the person created a booking with us 
+                # today_month = date.today().month
+                # booking_month = customer_bs.created_at.month
+                if(len(customer_bs) >= 3):
+                    percentage = 10 #// percent %
+                    divider  = 100 #// percent 
+                    
+                    #// new price 
+                    quoteP = quotePrice*((divider - percentage)/(divider))
+                    loyalC = quotePrice - quoteP
+                    return (quoteP, loyalC)
+                
+        #other wise 
+        return (quotePrice, 0.0)
+  
 
 
     #// hadle 1.0 TONS CALCULATIONS
@@ -333,7 +359,7 @@ class GenerateCustomerQuote(APIView):
         helper_fee = 90.0 #// rands (R)
         stairs_fee = self.one_ton_stairs(carry_floors) #// rands (R)
         price_per_km = 10.0 #// rands (R)
-        tall_gate_fee = 10.0
+        tall_gate_fee = 0.0
 
         quotePrice = (
             (base_amount + tall_gate_fee) +  #// base + tall 
@@ -360,7 +386,7 @@ class GenerateCustomerQuote(APIView):
         helper_fee = 100.0 #// rands (R)
         stairs_fee = self.onehalf_ton_stairs(carry_floors) #// rands (R)
         price_per_km = 12.0 #// rands (R)
-        tall_gate_fee = 10.0
+        tall_gate_fee = 0.0
 
         quotePrice = (
             (base_amount + tall_gate_fee) +  #// base + tall 
@@ -386,7 +412,7 @@ class GenerateCustomerQuote(APIView):
         helper_fee = 120.0 #// rands (R)
         stairs_fee = self.two_ton_stairs(carry_floors) #// rands (R)
         price_per_km = 14.0 #// rands (R)
-        tall_gate_fee = 10.0
+        tall_gate_fee = 0.0
 
         quotePrice = (
             (base_amount + tall_gate_fee) +  #// base + tall 
@@ -459,14 +485,16 @@ class GenerateCustomerQuote(APIView):
         #// here we need to check for discount 
         quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice) #// rands 
         
-        #// temporary loyal_customer 
-        loyal_customer_discount = 0.0
+        #// generate loyal customer discount 
+        qp, loyaldiscount = self.generateLoyalCustomerDiscount(quotePrice)
         
+        # set payload 
         payload['message'] = 'successfully generated quote'
-        payload['generate_quote_price'] = round(float(quotePrice), 2)
-        payload['mid_month_discount'] = round(float(discountPrice), 2)
-        payload['loyal_customer_discount'] = round(float(loyal_customer_discount), 2)
+        payload['generate_quote_price'] =  math.ceil(qp*100)/100 #round(float(q), 2)
+        payload['mid_month_discount'] =  math.ceil(discountPrice*100)/100 #round(float(discountPrice), 2)
+        payload['loyal_customer_discount'] =  math.ceil(loyaldiscount*100)/100 # round(float(loyaldiscount), 2)
         payload['status_code'] = status.HTTP_200_OK
+        
         
         return Response(payload, status= status.HTTP_200_OK)
 
