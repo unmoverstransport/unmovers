@@ -306,8 +306,13 @@ class GenerateCustomerQuote(APIView):
             
             #// return new quote price 
             return (newQuotePrice, mid_month_discount)
-            
-        return (quotePrice, mid_month_discount)
+        
+        #// here
+        in_count = 15 #// percent 
+        newQuotePrice = ((100 + in_count)/(100))*quotePrice
+        
+        # return 
+        return (newQuotePrice, mid_month_discount)
 
 
     #// hadle 1.0 TONS CALCULATIONS
@@ -315,7 +320,11 @@ class GenerateCustomerQuote(APIView):
         
         #// check 
         if(carry_floors <= 0):return 0
-        return (5*carry_floors + 15)
+        
+        stairs = 0.0
+        for index in range(carry_floors):
+            stairs += (5*(index + 1) + 15)
+        return stairs
 
     def one_ton(self, distance, carry_floors, additional_helpers):
         
@@ -339,7 +348,11 @@ class GenerateCustomerQuote(APIView):
     def onehalf_ton_stairs(self, carry_floors):
         
         if(carry_floors <= 0): return 0
-        return (5*carry_floors + 25)
+        
+        stairs = 0.0 
+        for index in range(carry_floors):
+            stairs += (5*(index + 1) + 25)
+        return stairs
 
     def onehalf_ton(self, distance, carry_floors, additional_helpers):
         
@@ -361,7 +374,11 @@ class GenerateCustomerQuote(APIView):
     def two_ton_stairs(self, carry_floors):
         
         if(carry_floors <= 0): return 0
-        return (5*carry_floors + 35)
+        
+        stairs = 0.0
+        for index in range(carry_floors):
+            stairs += (5*(index + 1) + 35)
+        return stairs
 
     def two_ton(self, distance, carry_floors, additional_helpers):
 
@@ -396,8 +413,6 @@ class GenerateCustomerQuote(APIView):
             quotePrice = self.two_ton(distance, carry_floors, additional_helpers)
             return quotePrice
         
-        
-            
     def post(self, request, *args, **kwargs):
         
         #// payload 
@@ -413,11 +428,6 @@ class GenerateCustomerQuote(APIView):
         # here we talk to the customer 
         if(vehicle_type is None or carry_floors is None or additional_helpers is None):
             
-                    
-            print(type(vehicle_type))
-            print(type(carry_floors))
-            print(type(additional_helpers))
-            
             # create error message
             message = 'vehicle type, Floors to carry or additional Helpers cannot be null. Bad request'
             
@@ -429,10 +439,7 @@ class GenerateCustomerQuote(APIView):
             return Response(payload, status= status.HTTP_400_BAD_REQUEST)
         
         if(vehicle_type <= 0 or type(carry_floors) != int or type(additional_helpers) != int):
-            
-            print(type(vehicle_type))
-            print(type(carry_floors))
-            print(type(additional_helpers))
+    
             # create error message
             message = 'vehicle type, Floors to carry or additional Helpers need to be an interger value'
             
