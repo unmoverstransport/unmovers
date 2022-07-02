@@ -24,6 +24,7 @@ from .serializers import (GetCompleteUserProfile,
                         UserProfileSerializer)
 
 
+from random import randint
 #// this is to retrieve user model for a specific user 
 class GetUserAccountAPIView(APIView):
     
@@ -223,4 +224,50 @@ class CustomerListAPIView(generics.ListAPIView):
 #// we need to personalize the token 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MoveItTokenObtainPairSerializer
-    
+
+
+#// this is new please enter it in the server 
+class RecoverAccountAPIView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        
+        # set payload 
+        payload = dict()
+        
+        #// here we need to get the email address 
+        recovery_email = request.data.get('recovery_email') or None 
+        
+        if(recovery_email is None):
+            
+            # set payload 
+            payload['error_msg'] = 'recovery email cannot be none'
+            payload['status_code'] = status.HTTP_400_BAD_REQUEST
+            
+            # //return 
+            return Response(payload, status = status.HTTP_400_BAD_REQUEST)
+        
+        #other wise everything is dope 
+        #get user with similar email 
+        user = get_user_model()\
+                    .objects\
+                    .filter(email = recovery_email)\
+                    .first() or None 
+                    
+        #// check
+        if(user is None):
+            
+            # set payload 
+            payload["msg"] = "user with the current email doesnt exist "
+            payload["status"] = status.HTTP_404_NOT_FOUND
+            
+            #// return 
+            return Response(payload, status.HTTP_404_NOT_FOUND) 
+        
+        #// here we need to send a code to their email to reset password 
+        #// we will have to generate a unique 6 digit pin to send to their email to reset password 
+        payload["msg"] = "Success!, an email with a 6 digit pin was sent to {0}".format(recovery_email)
+        payload["status"] = status.HTTP_200_OK
+        payload["six_digit_pin"] = randint(100000, 999999)
+        
+        return Response(payload, status = status.HTTP_200_OK)
+
