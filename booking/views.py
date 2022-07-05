@@ -76,7 +76,7 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
         quote_price = request.data.get('quote_price') or None
         mid_month_discount = request.data.get('mid_month_discount')
         loyal_customer_discount = request.data.get('loyal_customer_discount') 
-        distance_km = request.data.get('distance') or None 
+        distance_km = request.data.get('distance')
         payment_option = request.data.get('payment_option') 
         carry_floor = request.data.get('carry_floor')  
         vehicle_type = request.data.get('vehicle_type') or None  
@@ -110,15 +110,14 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
             
             
             message = """
-            routes: {0},
-            pickup_date: {1},
-            pickup_time: {2},
-            vehicle_type: {3},
-            quote_price: {4},
-            distance_km: {5},
-            mid_month_discount: {6},
-            loyal_customer_discount: {7},
-            """.format(routes, 
+            pickup_date: {0},
+            pickup_time: {1},
+            vehicle_type: {2},
+            quote_price: {3},
+            distance_km: {4},
+            mid_month_discount: {5},
+            loyal_customer_discount: {6},
+            """.format(
                        pickup_date, 
                        pickup_time, 
                        vehicle_type, 
