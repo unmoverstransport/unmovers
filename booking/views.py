@@ -18,7 +18,7 @@ import googlemaps
 import math
 
 #// we need the date time module 
-from datetime import date
+from datetime import date, datetime
 
 
 #from rest_framework_simplejwt.authentication import get_user_model
@@ -107,9 +107,29 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                                 or quote_price is None or distance_km is None
                                     or mid_month_discount is None 
                                         or loyal_customer_discount is None):
+            
+            
+            message = """
+            routes: {0},
+            pickup_date: {1},
+            pickup_time: {2},
+            vehicle_type: {3},
+            quote_price: {4},
+            distance_km: {5},
+            mid_month_discount: {6},
+            loyal_customer_discount: {7},
+            """.format(routes, 
+                       pickup_date, 
+                       pickup_time, 
+                       vehicle_type, 
+                       quote_price, 
+                       distance_km,
+                       mid_month_discount, 
+                       loyal_customer_discount)
 
             #set the payload and
-            payload['error_message'] = 'booking routes|pickup|quote-price, date or pickup time cannot be null'
+            #payload['error_message'] = 'booking routes|pickup|quote-price, date or pickup time cannot be null'
+            payload['error_message'] = message
             return Response(payload, status= status.HTTP_400_BAD_REQUEST) 
         
         
@@ -301,7 +321,7 @@ class UpdateBookingAPIView(generics.UpdateAPIView):
 class GenerateCustomerQuote(APIView):
 
 
-    def _mid_month_discount(self, quotePrice):
+    def _mid_month_discount(self, quotePrice, pickup_date):
         
         mid_month_discount = 0.0
         
@@ -314,12 +334,12 @@ class GenerateCustomerQuote(APIView):
         
         #// other wise check the date 
         #// create getter for todays date 
-        today = date.today()
+        booking_date =  datetime.strptime(pickup_date, '%Y-%m-%d')
         
         #// check if date falls within the bounds for discount 
         min_day_threshold = 5 #// day
         max_day_threshold = 25 #// day 
-        if(today.day >= min_day_threshold and today.day <= max_day_threshold):
+        if(booking_date.day >= min_day_threshold and booking_date.day <= max_day_threshold):
             
             #// calculate the discount 
             discount = 10 #// percent 
@@ -471,6 +491,7 @@ class GenerateCustomerQuote(APIView):
         vehicle_type = request.data.get('vehicle_type') 
         carry_floors = request.data.get('carry_floor')
         additional_helpers = request.data.get('additional_helpers')
+        pickup_date = request.data.get('pickup_date')
         
         # here we talk to the customer 
         if(vehicle_type is None or carry_floors is None or additional_helpers is None):
@@ -504,7 +525,7 @@ class GenerateCustomerQuote(APIView):
                                                        vehicle_type)
         
         #// here we need to check for discount 
-        quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice) #// rands 
+        quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice, pickup_date) #// rands 
         
         #// generate loyal customer discount 
         qp, loyaldiscount, did_apply_loyal_discount = self.generateLoyalCustomerDiscount(quotePrice)
