@@ -132,6 +132,11 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                 q_price = quote_price*((divider - percentage)/(divider))
                 return_customer_discount = quote_price - q_price
                 
+        #// prices rounded to nearest two decimal 
+        q_price_rounded = float("%.2f"%q_price)
+        peak_discount_rounded = float("%.2f"%mid_month_discount)
+        r_customer_discount_rounded = float("%.2f"%return_customer_discount)
+                
         #// try and save the booking 
         try:
             #//now we need to save the booking 
@@ -140,9 +145,9 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                         pickup_date = pickup_date,
                         pickup_time = pickup_time,
                         payment_option = payment_option,
-                        quote_price = q_price,
-                        mid_month_discount =  mid_month_discount,
-                        loyal_customer_discount = return_customer_discount,
+                        quote_price = q_price_rounded,
+                        mid_month_discount =  peak_discount_rounded,
+                        loyal_customer_discount = r_customer_discount_rounded,
                         distance_km = distance_km,
                         carry_floor = carry_floor,
                         vehicle_type = vehicle_type,
