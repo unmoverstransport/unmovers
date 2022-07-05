@@ -516,10 +516,10 @@ class GenerateCustomerQuote(APIView):
         #// generate return customer discount 
         qp, loyaldiscount, did_apply_loyal_discount = self.generateLoyalCustomerDiscount(quotePrice)
         
-        #// set rounded values 
-        roundedQuotePrice = round(qp, 2) # rounded to two decimal places 
-        roundedLoyalDiscount = round(loyaldiscount, 2) # rounded to two decimal places 
-        roundedMiddiscountPrice = round(middiscountPrice, 2) # rounded to two decimal places 
+        #// round values off to the nearest two decimal places 
+        roundedQuotePrice = float("%.2f"%qp) # rounded to two decimal places 
+        roundedLoyalDiscount = float("%.2f"%loyaldiscount) # rounded to two decimal places 
+        roundedMiddiscountPrice = float("%.2f"%middiscountPrice) # rounded to two decimal places 
         
         #// set payload 
         payload['message'] = 'Quote Successfully Generated'
