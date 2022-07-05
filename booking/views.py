@@ -108,33 +108,14 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                                     or mid_month_discount is None 
                                         or loyal_customer_discount is None):
             
-            
-            message = """
-            pickup_date: {0},
-            pickup_time: {1},
-            vehicle_type: {2},
-            quote_price: {3},
-            distance_km: {4},
-            mid_month_discount: {5},
-            loyal_customer_discount: {6},
-            """.format(
-                       pickup_date, 
-                       pickup_time, 
-                       vehicle_type, 
-                       quote_price, 
-                       distance_km,
-                       mid_month_discount, 
-                       loyal_customer_discount)
-
             #set the payload and
-            #payload['error_message'] = 'booking routes|pickup|quote-price, date or pickup time cannot be null'
-            payload['error_message'] = message
+            payload['error_message'] = 'booking routes|pickup|quote-price, date or pickup time cannot be null'
+            # payload['error_message'] = message
             return Response(payload, status= status.HTTP_400_BAD_REQUEST) 
         
         
                 
         #// here we need to check if discount was added 
-        print('did add loyal discount', did_apply_loyal_discount)
         return_customer_discount = loyal_customer_discount
         q_price = quote_price 
         if(did_apply_loyal_discount == False):
@@ -159,9 +140,9 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
                         pickup_date = pickup_date,
                         pickup_time = pickup_time,
                         payment_option = payment_option,
-                        quote_price = math.ceil(q_price*100)/100,
-                        mid_month_discount =  math.ceil(mid_month_discount*100)/100,
-                        loyal_customer_discount =math.ceil(return_customer_discount*100)/100,
+                        quote_price = q_price,
+                        mid_month_discount =  mid_month_discount,
+                        loyal_customer_discount = return_customer_discount,
                         distance_km = distance_km,
                         carry_floor = carry_floor,
                         vehicle_type = vehicle_type,
@@ -199,9 +180,9 @@ class CustomerViewOwnBookingsCreateAPIView(generics.CreateAPIView):
         #_booking
         serializer = BookingSerializer(_booking , 
                                        many = False,  
-                                       context = {'request':request},)
-        return Response(serializer.data, 
-                        status = status.HTTP_201_CREATED)
+                                       context = {'request': request},)
+        #// return response 
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
         
 
 class CustomerViewOwnBookingsListAPIView(generics.ListAPIView):
@@ -365,8 +346,6 @@ class GenerateCustomerQuote(APIView):
                                   
             if(customer_bs != None):
                 # here we check when the last time the person created a booking with us 
-                # today_month = date.today().month
-                # booking_month = customer_bs.created_at.month
                 if(len(customer_bs) >= 3):
                     percentage = 10 #// percent %
                     divider  = 100 #// percent 
@@ -478,14 +457,22 @@ class GenerateCustomerQuote(APIView):
         elif(float(vehicle_type) == vehicle_three):
             quotePrice = self.two_ton(distance, carry_floors, additional_helpers)
             return quotePrice
+        else:
+            #// convert value to v_type  
+            v_type = float(vehicle_type)
+            if(v_type > vehicle_three):
+                quotePrice = self.two_ton(distance, carry_floors, additional_helpers)
+                return quotePrice*1.5
+            else:
+                quotePrice = self.two_ton(distance, carry_floors, additional_helpers)
+                return quotePrice*1.5
         
     def post(self, request, *args, **kwargs):
         
         #// payload 
         payload = {}
 
-        #// here we need to retrieve certain information from the front end 
-        #// here we need to compute the distance 
+        #// here we need to retrieve certain information from the front end
         distance = request.data.get('distance')  #// KiloMeters 
         vehicle_type = request.data.get('vehicle_type') 
         carry_floors = request.data.get('carry_floor')
@@ -493,13 +480,13 @@ class GenerateCustomerQuote(APIView):
         pickup_date = request.data.get('pickup_date')
         
         # here we talk to the customer 
-        if(vehicle_type is None or carry_floors is None or additional_helpers is None):
+        if(vehicle_type is None or carry_floors is None or additional_helpers is None or pickup_date is None):
             
             # create error message
-            message = 'vehicle type, Floors to carry or additional Helpers cannot be null. Bad request'
+            message = 'vehicle type, Floors to carry, additional Helpers or pickup date cannot be null. Bad request'
             
             # set the payload 
-            payload['error_msg'] = message
+            payload['error_message'] = message
             payload['status_code'] = status.HTTP_400_BAD_REQUEST
             
             # response to the user 
@@ -511,7 +498,7 @@ class GenerateCustomerQuote(APIView):
             message = 'vehicle type, Floors to carry or additional Helpers need to be an interger value'
             
             # set the payload 
-            payload['error_msg'] = message
+            payload['error_message'] = message
             payload['status_code'] = status.HTTP_400_BAD_REQUEST
             
             # response to the user 
@@ -523,21 +510,26 @@ class GenerateCustomerQuote(APIView):
                                                        additional_helpers, 
                                                        vehicle_type)
         
-        #// here we need to check for discount 
-        quotePrice, discountPrice = self._mid_month_discount(generatedQuotePrice, pickup_date) #// rands 
+        #// generate Off Peak discount/ Mid Month discount 
+        quotePrice, middiscountPrice = self._mid_month_discount(generatedQuotePrice, pickup_date) #// rands 
         
-        #// generate loyal customer discount 
+        #// generate return customer discount 
         qp, loyaldiscount, did_apply_loyal_discount = self.generateLoyalCustomerDiscount(quotePrice)
         
-        # set payload 
-        payload['message'] = 'successfully generated quote'
-        payload['generate_quote_price'] =  math.ceil(qp*100)/100 #round(float(q), 2)
-        payload['mid_month_discount'] =  math.ceil(discountPrice*100)/100 #round(float(discountPrice), 2)
-        payload['loyal_customer_discount'] =  math.ceil(loyaldiscount*100)/100 # round(float(loyaldiscount), 2)
+        #// set rounded values 
+        roundedQuotePrice = round(qp, 2) # rounded to two decimal places 
+        roundedLoyalDiscount = round(loyaldiscount, 2) # rounded to two decimal places 
+        roundedMiddiscountPrice = round(middiscountPrice, 2) # rounded to two decimal places 
+        
+        #// set payload 
+        payload['message'] = 'Quote Successfully Generated'
+        payload['generate_quote_price'] =  roundedQuotePrice
+        payload['mid_month_discount'] =  roundedMiddiscountPrice
+        payload['loyal_customer_discount'] =  roundedLoyalDiscount
         payload['did_apply_loyal_discount'] = did_apply_loyal_discount
         payload['status_code'] = status.HTTP_200_OK
         
-        
+        #// return payload 
         return Response(payload, status= status.HTTP_200_OK)
 
 #// testing 
