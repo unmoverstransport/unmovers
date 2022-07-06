@@ -8,7 +8,7 @@ from django.conf import settings
 
 #// send email 
 @receiver(post_save, sender = Booking)
-def send_invoice(sender, invoice, **kwargs):
+def send_invoice(sender, instance, **kwargs):
     
     invoice_instance_string = """
 
@@ -23,11 +23,11 @@ def send_invoice(sender, invoice, **kwargs):
         Amount due = {4}
     
     """.format(
-        invoice.id,
-        invoice.booker,
-        invoice.additional_helpers,
-        invoice.distance_km,
-        invoice.quote_price
+        instance.id,
+        instance.booker,
+        instance.additional_helpers,
+        instance.distance_km,
+        instance.quote_price
     )
     
     #// send the mail 
