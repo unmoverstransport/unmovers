@@ -6,4 +6,4 @@ class BookingConfig(AppConfig):
     name = 'booking'
     
     def ready(self) -> None:
-        import booking.signals
+        import booking.bookings_signals
