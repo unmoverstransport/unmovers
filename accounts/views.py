@@ -23,6 +23,9 @@ from .serializers import (GetCompleteUserProfile,
                         UpdateUserSerializer, 
                         UserProfileSerializer)
 
+# email stuff 
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 from random import randint
 #// this is to retrieve user model for a specific user 
@@ -263,11 +266,45 @@ class RecoverAccountAPIView(APIView):
             #// return 
             return Response(payload, status.HTTP_404_NOT_FOUND) 
         
-        #// here we need to send a code to their email to reset password 
+        # here we generate the unique 6 digit pin 
+        six_digit_pin = randint(100000, 999999)
+        
+        # here we send the email to the user 
+        reset_password_email_body = """
+        Hi {0}, Thank you very much for Using Our Services. 
+        
+        Here's your unique six digit pin to reset your password 
+        
+        PIN CODE: {1}
+        
+        if you have any questions please kindly send us an email to this email 
+        address: unitendlela@gmail.com and one of our consultants will response
+        to you as soon as possible. 
+        
+        Kind Regards 
+        Unite Ndlela Transport Services Admin
+        email: unitendlela@gmail.com
+        phone No: 0844394032
+        """.format(
+            str(user.first_name) + " " + str(user.last_name),
+            six_digit_pin,
+        )
+        
+        # email sender 
+        email_sender = EmailMessage(
+            'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)',
+            reset_password_email_body,
+            settings.EMAIL_HOST_USER,
+            ['u12318958@tuks.co.za', str(user.email)] 
+        )
+           
+        email_sender.fail_silently = True
+        email_sender.send()
+
         #// we will have to generate a unique 6 digit pin to send to their email to reset password 
         payload["msg"] = "Success!, an email with a 6 digit pin was sent to {0}".format(recovery_email)
         payload["status"] = status.HTTP_200_OK
-        payload["six_digit_pin"] = randint(100000, 999999)
+        payload["six_digit_pin"] = six_digit_pin
         
         return Response(payload, status = status.HTTP_200_OK)
 
