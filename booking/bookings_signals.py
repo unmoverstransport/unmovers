@@ -13,15 +13,17 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
     if(created):
         invoice_instance_string = """
             
-            Hi {1} {2}
+            Hi {0} {1}
             UNITE NDLELA TRANSPORT SERVICES would like to Thank you for using our services
             below is your booking Slip
             
             SLIP:
-            Requested Helpers = {3}
-            Stairs to Carry = {4}
-            distance(kilometers) = {5}(kms)
-            Amount due = R {6}
+            Requested Helpers = {2}
+            Stairs to Carry = {3}
+            distance(kilometers) = {4}(kms)
+            Amount due = R {5}
+            Booking Date = {6}
+            Booking Time = {7}
             
             One of our drivers will be asigned to your booking and will contact you
             via email or phone number once they're on their way to attend to your booking
@@ -35,12 +37,14 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
             email: unitendlela@gmail.com
             phone No: 0844394032
         """.format(
-            str(instance.booker.first_name) + ' ' + str(instance.booker.last_name),
-            '{0}'.format(instance.booker.email),
-            instance.additional_helpers,
-            instance.carry_floor,
-            instance.distance_km,
-            instance.quote_price
+            str(instance.booker.first_name) + ' ' + str(instance.booker.last_name), #// 0
+            '{0}'.format(instance.booker.email), #//1
+            instance.additional_helpers, #//2
+            instance.carry_floor, #// 3
+            instance.distance_km, #// 4
+            instance.quote_price, #// 5
+            instance.pickup_date, #// 6
+            instance.pickup_time, #// 7
         )
         
         #// send the mail 
