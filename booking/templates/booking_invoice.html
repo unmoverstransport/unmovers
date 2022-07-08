@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- table styles -->
+    <style>
+
+        body{
+            background-color: white;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .logo-name{
+            color: #972678;
+        }
+
+        .logo-name span{
+            color: #514f97;
+        }
+
+        table{
+            border-collapse: collapse;
+        }
+
+        table th{
+            text-align: left;
+             /* top right bottom left */
+            padding: 4px 100px 4px 4px; 
+            background-color:#972678;
+            color: white;
+          
+        }
+
+        table td{
+            /* top left bottom right */
+            padding: 4px 4px;
+        }
+
+        #final-item{
+            border-bottom: 1px solid rgb(173, 173, 173);
+            border-top: 1px solid rgb(173, 173, 173);
+            color: black;
+            font-weight: bold;
+        }
+
+        #email-id{
+            font-weight: bold;
+        }
+
+        #email-id span{
+            font-weight: normal;
+        }
+
+     
+        a{
+            color: black;
+            font-weight: bold;
+        }
+
+
+
+    </style>
+    <title>Unite Ndlela Transport Services</title>
+</head>
+    <body>
+        <h1 class="logo-name">Unite <span style="margin: 0px;">Ndlela</span></h1>
+        <h3>Hi Eric Lekwane</h3>
+        <p><span style="font-weight: bold; margin: 0px;">UNITE NDLELA TRANSPORT SERVICES PTY(LTD) <br></span> would like to Thank you for using our services below is your booking invoice</p>
+        <h3>INVOICE</h3>
+        <table>
+            <tr id="description-totals-header">
+                <th style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">Description</th>
+                <th style="border-top-right-radius: 5px;border-bottom-right-radius: 5px;">Totals</th>
+            </tr>
+            <tr>
+                <td>Base</td>
+                <td>R 1050.00</td>
+            </tr>
+            <tr id="discount-header">
+                <th colspan="2" style="border-radius: 5px ;">Discounts</th>
+            </tr>
+            <tr>
+                <td>Off Peak</td>
+                <td>R 0.00</td>
+            </tr>
+            <tr>
+                <td>Return Customer</td>
+                <td>R 0.00</td>
+            </tr>
+            <tr id="final-item">
+                <td>Amount Due</td>
+                <td>R 1050.00</td>
+            </tr>
+        </table>
+
+        <p id="sub-body">
+            One of our drivers will be asigned to your booking and will contact you
+            via email or phone number once they're on their way to attend to your booking
+            if you have any questions, please kindly send us an email
+            <a href="#" style="margin: 0px;">unitendlela@gmail.com</a> or call us and one of our consultants will attend 
+            to your query. 
+        </p>
+
+        <p>Kind Regards </p>
+        <p>Unite Ndlela Transport Services Admin</p>
+        <p id="email-id">Email: <a href="#" style="margin: 0px; font-weight: normal;">unitendlela@gmail.com</a></p>
+        <p id="phone-id">Phone No: <span style="margin: 0px;">(+27)84 439 4032 </span></p>
+       
+    </body>
+</html>

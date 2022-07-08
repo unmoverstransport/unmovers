@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, OutstandingToken, Blac
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 
-from .models import UserProfile 
+from .models import UserProfile, NewUser
 from .pagination import StaffDriverPaginator, CustomerPaginator
 # local imports 
 from .serializers import (GetCompleteUserProfile,
@@ -21,7 +21,8 @@ from .serializers import (GetCompleteUserProfile,
                         RegisterSerializer, 
                         NewUserSerializer, 
                         UpdateUserSerializer, 
-                        UserProfileSerializer)
+                        UserProfileSerializer, 
+                        ChangePasswordSerializer)
 
 # email stuff 
 from django.core.mail import EmailMessage
@@ -304,7 +305,115 @@ class RecoverAccountAPIView(APIView):
         #// we will have to generate a unique 6 digit pin to send to their email to reset password 
         payload["msg"] = "Success!, an email with a 6 digit pin was sent to {0}".format(recovery_email)
         payload["status"] = status.HTTP_200_OK
+        payload["user_id"] = user.id
+        payload["user_email"] = user.email
         payload["six_digit_pin"] = six_digit_pin
         
         return Response(payload, status = status.HTTP_200_OK)
 
+#// view to change user password 
+class ChangePasswordGenericView(generics.UpdateAPIView):
+    
+    serializer_class = ChangePasswordSerializer
+    model = NewUser
+    ## permission_classes = [IsAuthenticated,]
+    
+    def get_user(self, user_id, user_email):
+        #//set current User to None 
+        current_user = None 
+        
+        #// try except 
+        try:
+            current_user = NewUser.objects\
+                            .filter(id = user_id, 
+                                    email = user_email)\
+                            .first()
+        except NewUser.DoesNotExist:
+            current_user = None 
+        
+        #// return 
+        return current_user
+
+    
+    def update(self, request, *args, **kwargs):
+        
+        # set payload 
+        payload = dict()
+        
+        # get items 
+        user_id = request.data.get('user_id')
+        user_email = request.data.get('user_email')
+        new_password = request.data.get('new_password')
+        
+        if(user_id is None or user_email is None or new_password is None):
+            
+            #// set response messages 
+            error_message = "user id| user email address or new password cannot be none"
+            error_status_code = status.HTTP_400_BAD_REQUEST
+            
+            #// set payload 
+            payload["error_message"] = error_message
+            payload["error_status_code"] = error_status_code
+            
+            #//send error 
+            return Response(payload, status=error_status_code)
+        
+        #// check if user exists 
+        current_user = self.get_user(user_id, user_email)
+        
+        #// check 
+        if(current_user is None):
+            
+            #//set error message 
+            error_message = "Current User does not exists Bad Request"
+            error_status_code = status.HTTP_400_BAD_REQUEST
+            
+            #// setpayload 
+            payload["error_message"] = error_message
+            payload["error_status_code"] = status.HTTP_204_NO_CONTENT
+            
+            #// respond 
+            return Response(payload, status=status.HTTP_204_NO_CONTENT)
+        
+            
+        # serializer data 
+        s_data = {"new_password": new_password}
+        
+        #//set serializer 
+        serializer = self.get_serializer(data = s_data)
+        
+        #// check serializer 
+        if(serializer.is_valid(raise_exception=True)):
+            
+            #// reset the password 
+            current_user.set_password(serializer.data.get("new_password"))
+            current_user.save()
+            
+            #// set success message 
+            success_message = "Password was reset successfully"
+            success_status_code = status.HTTP_200_OK
+            
+            #// set payload 
+            payload["success_message"] = success_message
+            payload["success_status_code"] = success_status_code
+            
+            #// return response 
+            return Response(payload, status = success_status_code)
+        
+        #//set payload 
+        payload["error_message"] = serializer.errors
+        payload["error_status_code"] = status.HTTP_400_BAD_REQUEST
+        
+        #// return Response 
+        return Response(payload, status = status.HTTP_400_BAD_REQUEST)
+    
+        
+            
+            
+        
+    
+    
+    
+        
+        
+    

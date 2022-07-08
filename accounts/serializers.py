@@ -1,5 +1,6 @@
 # 3rd party local imports 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, ImageField
+from rest_framework import serializers
 from rest_framework.authentication import get_user_model
 # local imports 
 from .models import NewUser, UserProfile
@@ -137,6 +138,17 @@ class MoveItTokenObtainPairSerializer(TokenObtainPairSerializer):
         #// return token 
         return token 
     
-   
+    
+
+#// here we write serializer to change user password 
+class ChangePasswordSerializer(serializers.Serializer):
+    
+    model = NewUser
+    
+    #// set old password 
+    # old_password = serializers.CharField(required = False)
+    new_password = serializers.CharField(required = True)
+    
+    
         
         

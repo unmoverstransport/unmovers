@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/get/user/', views.GetFullUserProfileView.as_view(), name = 'get-userprofile'),
     path('api/get/user-account/', views.GetUserAccountAPIView.as_view(), name = 'user-account'),
     path('api/recover-account/', views.RecoverAccountAPIView.as_view(), name = 'recover-account'),
+    path('api/reset-user-password/', views.ChangePasswordGenericView.as_view(), name="reset-user-password"),
     # these are for the stuff 
     path('api/drivers/', views.DriverListAPIView.as_view(), name = 'drivers-view'),
     path("api/driver/<int:pk>/update/", views.DriverUpdateAPIView.as_view(), name="update-driver"),
