@@ -67,9 +67,10 @@
 </head>
     <body>
         <h1 class="logo-name">Unite <span style="margin: 0px;">Ndlela</span></h1>
-        <h3>Hi Eric Lekwane</h3>
-        <p><span style="font-weight: bold; margin: 0px;">UNITE NDLELA TRANSPORT SERVICES PTY(LTD) <br></span> would like to Thank you for using our services below is your booking invoice</p>
-        <h3>INVOICE</h3>
+        <h2>Hi {{full_name}}</h2>
+        <p><span style="font-weight: bold; margin: 0px;">UNITE NDLELA TRANSPORT SERVICES PTY(LTD) <br></span> would like to Thank you for using our services
+            <br>below is your booking invoice</p>
+        <h3>INVOICE {{invoice_number}}</h3>
         <table>
             <tr id="description-totals-header">
                 <th style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">Description</th>
@@ -77,22 +78,22 @@
             </tr>
             <tr>
                 <td>Base</td>
-                <td>R 1050.00</td>
+                <td>R {{base_fee}}</td>
             </tr>
             <tr id="discount-header">
                 <th colspan="2" style="border-radius: 5px ;">Discounts</th>
             </tr>
             <tr>
                 <td>Off Peak</td>
-                <td>R 0.00</td>
+                <td>R {{off_peak}}</td>
             </tr>
             <tr>
                 <td>Return Customer</td>
-                <td>R 0.00</td>
+                <td>R {{return_customer}}</td>
             </tr>
             <tr id="final-item">
                 <td>Amount Due</td>
-                <td>R 1050.00</td>
+                <td>R {{amount_due}}</td>
             </tr>
         </table>
 
