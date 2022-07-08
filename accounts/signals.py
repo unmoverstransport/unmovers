@@ -26,7 +26,7 @@ def create_auth_token(sender, instance = None, created = False, **kwargs):
             UserProfile.objects.create(user = instance)
             
             #// set values 
-            full_name = str(instance.first_name) + ' ' + str(instance.last_name)
+            full_name = str(instance.first_name).capitalize() + ' ' + str(instance.last_name).capitalize()
             
             #// payload 
             payload = dict()
@@ -43,7 +43,7 @@ def create_auth_token(sender, instance = None, created = False, **kwargs):
                 'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
                 text_content, # content or body 
                 settings.EMAIL_HOST_USER,
-                ['u12318958@tuks.co.za'], #// receipiant list 
+                ['u12318958@tuks.co.za', str(instance.email)], #// receipiant list 
             )
             
             #// attach email html 

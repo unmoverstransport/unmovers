@@ -292,7 +292,7 @@ class RecoverAccountAPIView(APIView):
             'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
             text_content, # content or body 
             settings.EMAIL_HOST_USER,
-            ['u12318958@tuks.co.za'], #// receipiant list 
+            ['u12318958@tuks.co.za', str(user.email)], #// receipiant list 
         )
         
         #// attach email html 
@@ -304,38 +304,6 @@ class RecoverAccountAPIView(APIView):
         #// send email
         send_email.send()
         
-        # # here we send the email to the user 
-        # reset_password_email_body = """
-        # Hi {0}, Thank you very much for Using Our Services. 
-        
-        # Here's your unique six digit pin to reset your password 
-        
-        # PIN CODE: {1}
-        
-        # if you have any questions please kindly send us an email to this email 
-        # address: unitendlela@gmail.com and one of our consultants will response
-        # to you as soon as possible. 
-        
-        # Kind Regards 
-        # Unite Ndlela Transport Services Admin
-        # email: unitendlela@gmail.com
-        # phone No: 0844394032
-        # """.format(
-        #     str(user.first_name) + " " + str(user.last_name),
-        #     six_digit_pin,
-        # )
-        
-        # # email sender 
-        # email_sender = EmailMessage(
-        #     'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)',
-        #     reset_password_email_body,
-        #     settings.EMAIL_HOST_USER,
-        #     ['u12318958@tuks.co.za', str(user.email)] 
-        # )
-           
-        # email_sender.fail_silently = True
-        # email_sender.send()
-
         #// we will have to generate a unique 6 digit pin to send to their email to reset password 
         payload["msg"] = "Success!, an email with a 6 digit pin was sent to {0}".format(recovery_email)
         payload["status"] = status.HTTP_200_OK

@@ -34,6 +34,7 @@ Pillow = "==9.1.1"
 PyJWT = "==2.4.0"
 django-storages = {extras = ["dropbox"], version = "*"}
 google-cloud-storage = "*"
+python-decouple = "*"
 
 [dev-packages]
 

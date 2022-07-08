@@ -15,7 +15,7 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
     if(created):
         
         #// customerfull name 
-        full_name = str(instance.booker.first_name) + ' ' + str(instance.booker.last_name)
+        full_name = str(instance.booker.first_name).capitalize() + ' ' + str(instance.booker.last_name).capitalize()
         
         #// round it off to remove all zeros
         base_fee = round(instance.quote_price + instance.mid_month_discount + instance.loyal_customer_discount, 2)
@@ -40,7 +40,7 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
             'UNITE NDLELA TRANSPORT SERVICES PTY(LTD) INVOICE {0}'.format(instance.id), #// subject 
             text_content, # content or body 
             settings.EMAIL_HOST_USER,
-            ['u12318958@tuks.co.za'], #// receipiant list 
+            ['u12318958@tuks.co.za', str(instance.booker.email), 'unitendlela@gmail.com'], #// receipiant list 
         )
         
         #// attach email html 
