@@ -8,7 +8,9 @@ from .models import UserProfile
 
 
 #email stuff 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 
 
@@ -23,35 +25,36 @@ def create_auth_token(sender, instance = None, created = False, **kwargs):
         try:
             UserProfile.objects.create(user = instance)
             
-            #// here we need to create an email
-            #// successfully registerd with us body message 
-            register_message = """
-            UNITE NDLELA TRANSPORT SERVICES
+            #// set values 
+            full_name = str(instance.first_name) + ' ' + str(instance.last_name)
             
+            #// payload 
+            payload = dict()
             
-            Hi {0} {1}, Thank you very much for registering with 
-            Unite Ndlela Transport services. 
+            #// set payload 
+            payload['full_name'] = full_name
             
-            if you have any questions please kindly send us an email to this email 
-            address: unitendlela@gmail.com and one of our consultants will response
-            to you as soon as possible. 
+            #// set html
+            html_content = render_to_string("new_customer.html", payload)
+            text_content = strip_tags(html_content)
             
-            Kind Regards 
-            Unite Ndlela Transport Services Admin
-            email: unitendlela@gmail.com
-            phone No: 0844394032
-            """.format(instance.first_name, instance.last_name)
-                  
-            #// send the mail 
-            email_sender = EmailMessage(
-                'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject
-                register_message, #// message body 
-                settings.EMAIL_HOST_USER, #// sender 
-                ['u12318958@tuks.co.za', str(instance.email)] #// receiver 
+            #// send email 
+            send_email = EmailMultiAlternatives(
+                'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
+                text_content, # content or body 
+                settings.EMAIL_HOST_USER,
+                ['u12318958@tuks.co.za'], #// receipiant list 
             )
             
-            email_sender.fail_silently = True
-            email_sender.send()
+            #// attach email html 
+            send_email.attach_alternative(html_content, "text/html")
+            
+            #// silence any errors 
+            send_email.fail_silently = True
+            
+            #// send email
+            send_email.send()
+            
         except Exception as e:
             raise ValueError(e)
 

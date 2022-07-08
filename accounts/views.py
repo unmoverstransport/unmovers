@@ -25,7 +25,9 @@ from .serializers import (GetCompleteUserProfile,
                         ChangePasswordSerializer)
 
 # email stuff 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 
 from random import randint
@@ -270,37 +272,69 @@ class RecoverAccountAPIView(APIView):
         # here we generate the unique 6 digit pin 
         six_digit_pin = randint(100000, 999999)
         
-        # here we send the email to the user 
-        reset_password_email_body = """
-        Hi {0}, Thank you very much for Using Our Services. 
+        #// set values 
+        full_name = str(user.first_name) + ' ' + str(user.last_name)
         
-        Here's your unique six digit pin to reset your password 
         
-        PIN CODE: {1}
+        #// payload 
+        payload = dict()
         
-        if you have any questions please kindly send us an email to this email 
-        address: unitendlela@gmail.com and one of our consultants will response
-        to you as soon as possible. 
+        #// set payload 
+        payload["six_digit_pin"] = six_digit_pin
+        payload["full_name"] = full_name
         
-        Kind Regards 
-        Unite Ndlela Transport Services Admin
-        email: unitendlela@gmail.com
-        phone No: 0844394032
-        """.format(
-            str(user.first_name) + " " + str(user.last_name),
-            six_digit_pin,
-        )
+        #// set html
+        html_content = render_to_string("six_digit_reset_pin.html", payload)
+        text_content = strip_tags(html_content)
         
-        # email sender 
-        email_sender = EmailMessage(
-            'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)',
-            reset_password_email_body,
+        #// send email 
+        send_email = EmailMultiAlternatives(
+            'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
+            text_content, # content or body 
             settings.EMAIL_HOST_USER,
-            ['u12318958@tuks.co.za', str(user.email)] 
+            ['u12318958@tuks.co.za'], #// receipiant list 
         )
+        
+        #// attach email html 
+        send_email.attach_alternative(html_content, "text/html")
+        
+        #// silence any errors 
+        send_email.fail_silently = True
+        
+        #// send email
+        send_email.send()
+        
+        # # here we send the email to the user 
+        # reset_password_email_body = """
+        # Hi {0}, Thank you very much for Using Our Services. 
+        
+        # Here's your unique six digit pin to reset your password 
+        
+        # PIN CODE: {1}
+        
+        # if you have any questions please kindly send us an email to this email 
+        # address: unitendlela@gmail.com and one of our consultants will response
+        # to you as soon as possible. 
+        
+        # Kind Regards 
+        # Unite Ndlela Transport Services Admin
+        # email: unitendlela@gmail.com
+        # phone No: 0844394032
+        # """.format(
+        #     str(user.first_name) + " " + str(user.last_name),
+        #     six_digit_pin,
+        # )
+        
+        # # email sender 
+        # email_sender = EmailMessage(
+        #     'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)',
+        #     reset_password_email_body,
+        #     settings.EMAIL_HOST_USER,
+        #     ['u12318958@tuks.co.za', str(user.email)] 
+        # )
            
-        email_sender.fail_silently = True
-        email_sender.send()
+        # email_sender.fail_silently = True
+        # email_sender.send()
 
         #// we will have to generate a unique 6 digit pin to send to their email to reset password 
         payload["msg"] = "Success!, an email with a 6 digit pin was sent to {0}".format(recovery_email)

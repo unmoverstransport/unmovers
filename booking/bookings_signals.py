@@ -14,13 +14,19 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
     
     if(created):
         
+        #// customerfull name 
+        full_name = str(instance.booker.first_name) + ' ' + str(instance.booker.last_name)
+        
+        #// round it off to remove all zeros
+        base_fee = round(instance.quote_price + instance.mid_month_discount + instance.loyal_customer_discount, 2)
+        
         #// this is what we want to pass 
         payload = dict()
         
         # //set payload
-        payload["full_name"] = str(instance.booker.first_name) + ' ' + str(instance.booker.last_name)
+        payload["full_name"] = full_name
         payload["invoice_number"] = instance.id
-        payload["base_fee"] = instance.quote_price + instance.mid_month_discount + instance.loyal_customer_discount
+        payload["base_fee"] = float("%.2f"%base_fee)
         payload["off_peak"] = instance.mid_month_discount
         payload["return_customer"] = instance.loyal_customer_discount
         payload["amount_due"] = instance.quote_price
