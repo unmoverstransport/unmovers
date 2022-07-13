@@ -526,9 +526,16 @@ class GenerateCustomerQuote(APIView):
         roundedLoyalDiscount = float("%.2f"%loyaldiscount) # rounded to two decimal places 
         roundedMiddiscountPrice = float("%.2f"%middiscountPrice) # rounded to two decimal places 
         
+        #// calculate base quote price 
+        baseQPrice = roundedQuotePrice + roundedLoyalDiscount + roundedMiddiscountPrice
+        
+        #// round off 
+        roundedBaseQuotePrice = float("%.2f"%baseQPrice) # rounded to two decimal places 
+        
         #// set payload 
         payload['message'] = 'Quote Successfully Generated'
         payload['generate_quote_price'] =  roundedQuotePrice
+        payload['base_quote_price'] = roundedBaseQuotePrice
         payload['mid_month_discount'] =  roundedMiddiscountPrice
         payload['loyal_customer_discount'] =  roundedLoyalDiscount
         payload['did_apply_loyal_discount'] = did_apply_loyal_discount

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- table styles -->
+    <style>
+
+        body{
+            background-color: white;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        /*set the logo color */
+        .logo{
+            color: #972678;
+        }
+        .logo span{
+            color: #514f97;
+        }
+
+        /*invoice*/
+        .invoice-class{
+            color: black;
+            font-weight: bold;
+        }  
+
+        /*paragraph email*/
+        .p-email, .p-email span{
+            font-weight: bold;
+        }
+
+        /*links*/
+        a{
+            color: black;
+        }
+    </style>
+    <title>Unite Ndlela Transport Services</title>
+</head>
+    <body>
+        <h1 class="logo">Unite <span style="margin: 0px;">Ndlela</span></h1>
+        <h2>Hi Unite Ndlela</h3>
+
+        <p id="sub-body">
+            A new booking has been made for Unite Ndlela Transport Services PTY(LTD) for <span class="invoice-class">Invoice Number {{invoice_id}}</span>.
+            <br>
+            Please Allocate driver and contact customer for booking confirmation.
+        </p>
+
+        <p style="margin: 0px; padding: 0px;">Regards</p>
+        <p style="margin: 0px; padding: 0px;">Unite Ndlela Transport Services Admin</p>   
+        <p style="margin: 0px; padding: 0px;" class="p-email">Email: <a href="#">movers@untransport.co.za</a></p> 
+    </body>
+</html>
