@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast = bool)
+DEBUG = config('DEBUG', cast = bool, default = False)
 
 ALLOWED_HOSTS = ['localhost', 'https://unmovers.herokuapp.com/',]
 
@@ -242,6 +242,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast = str)
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast = str)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast = bool)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast = bool, default = True)
 
 
