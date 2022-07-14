@@ -66,7 +66,6 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
             company_html_content = render_to_string("custom_unite_ndlela.html", company_payload)
             company_text_content = strip_tags(company_html_content)
             
-            
                     #// send email 
             company_email = EmailMultiAlternatives(
                 'UNITE NDLELA TRANSPORT SERVICES PTY(LTD) INVOICE {0}'.format(instance.id), #// subject 
