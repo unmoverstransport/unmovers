@@ -13,6 +13,9 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
+#safe 
+from decouple import config
+
 
 # create signal  _set.AUTH_USER_MODEL
 @receiver(post_save, sender = _set.AUTH_USER_MODEL)
@@ -43,7 +46,7 @@ def create_auth_token(sender, instance = None, created = False, **kwargs):
                 'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
                 text_content, # content or body 
                 settings.EMAIL_HOST_USER,
-                ['u12318958@tuks.co.za', str(instance.email)], #// receipiant list 
+                [config('PERSONAL_EMAIL', cast=str), str(instance.email)], #// receipiant list 
             )
             
             #// attach email html 

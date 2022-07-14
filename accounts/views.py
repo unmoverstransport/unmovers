@@ -31,6 +31,9 @@ from django.utils.html import strip_tags
 from django.conf import settings
 
 from random import randint
+
+#personal 
+from decouple import config
 #// this is to retrieve user model for a specific user 
 class GetUserAccountAPIView(APIView):
     
@@ -292,7 +295,7 @@ class RecoverAccountAPIView(APIView):
             'UNITE NDLELA TRANSPORT SERVICES PTY(LTD)', #// subject 
             text_content, # content or body 
             settings.EMAIL_HOST_USER,
-            ['u12318958@tuks.co.za', str(user.email)], #// receipiant list 
+            [config('PERSONAL_EMAIL', cast=str), str(user.email)], #// receipiant list 
         )
         
         #// attach email html 

@@ -10,11 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from ctypes import cast
 from pathlib import Path
 from datetime import timedelta
+from django import conf
 import django_heroku
 import os 
 from google.oauth2 import service_account
+from decouple import config
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,10 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-a!-^q$90+=nkzvs6(77^8jrg_v_%rmg&b@9-1vc6b^f=r)_r#='
+SECRET_KEY = config('SECRET_KEY', cast = str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', cast = bool)
 
 ALLOWED_HOSTS = ['localhost', 'https://unmovers.herokuapp.com/',]
 
@@ -127,31 +132,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-#postgres://:@:5432/
-# just in case: django.db.backends.postgresql_psycopg2
-#postgres://wdepcbgwjrrtpz:bb0469dda46191ec7192cb7b752aa62675c069a61f2e1118df12effc2eb30d80@ec2-54-165-178-178.compute-1.amazonaws.com:5432/d704n3hpju61um
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbvle56hq0ttd4',
-        'USER': 'ajopygvlwshomy',
-        'PASSWORD': 'b79bb37c458a0533cfc57a5391282b7892698ead5e9479582c58602388bac73a',
-        'HOST':'ec2-34-198-186-145.compute-1.amazonaws.com',
+        'NAME': config('NAME', cast = str),
+        'USER': config('USER', cast = str),
+        'PASSWORD': config('PASSWORD', cast = str),
+        'HOST': config('HOST', cast = str),
         'PORT': '5432'
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'moveit',
-#         'USER': 'postgres',
-#         'PASSWORD': '12345',
-#         'HOST':'localhost',
-#         'PORT': '5432'
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -196,8 +187,8 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 )
 
 DEFAULT_FILE_STORAGE = 'core.gcloud.GoogleCloudMediaFileStorage'
-GS_PROJECT_ID = 'prefab-surfer-351621'
-GS_BUCKET_NAME = 'unmovers_media'
+GS_PROJECT_ID = config('GS_PROJECT_ID', cast = str)
+GS_BUCKET_NAME = config('GS_BUCKET_NAME', cast = str)
 MEDIA_ROOT = 'media/'
 UPLOAD_ROOT = 'media/uploads/'
 MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
@@ -247,9 +238,9 @@ django_heroku.settings(locals())
 # set email 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'unmoverstransport@gmail.com'
-EMAIL_HOST_PASSWORD = 'vthfcllsmcbuqyjp'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast = str)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast = str)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast = bool)
 
 

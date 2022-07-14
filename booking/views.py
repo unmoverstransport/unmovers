@@ -15,15 +15,12 @@ from .serializers import BookingSerializer
 
 from django.utils.translation import gettext_lazy as _
 import googlemaps
-import math
 
 #// we need the date time module 
 from datetime import date, datetime
 
-
-#from rest_framework_simplejwt.authentication import get_user_model
-#from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
-#from rest_framework.authentication import TokenAuthentication
+#// safe 
+from decouple import config
 
 """
 paginator = BookingsPaginator()
@@ -33,11 +30,8 @@ return paginator.get_paginated_response(serializer.data)
 
 Here we gonna use class based views 
 """
-client = googlemaps.Client(key = 'AIzaSyCkMK3usAJzg4dI_ANOvNZeNaoTrgsmnjg')
+client = googlemaps.Client(key = config('GOOGLE_API_KEY', cast=str))
 
-# print(results['rows'][0]['elements'][0]['distance']['text'])
-# print('\n')
-# print(results, type(results))
 
 # this is to return all the bookings (STAFF VIEW) 
 class CustomerBookingsListAPIView(generics.ListAPIView):

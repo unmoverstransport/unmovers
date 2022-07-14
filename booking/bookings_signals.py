@@ -8,8 +8,9 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
-#//email 
-#// 'unitendlela@gmail.com'
+#safe 
+from decouple import config
+
 
 #// send email 
 @receiver(post_save, sender = Booking)
@@ -44,7 +45,7 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
                 'UNITE NDLELA TRANSPORT SERVICES PTY(LTD) INVOICE {0}'.format(instance.id), #// subject 
                 text_content, # content or body 
                 settings.EMAIL_HOST_USER,
-                ['u12318958@tuks.co.za', 
+                [config('PERSONAL_EMAIL', cast = str), 
                 str(instance.booker.email)], #// receipiant list 
             )
             
@@ -71,9 +72,9 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
                 'UNITE NDLELA TRANSPORT SERVICES PTY(LTD) INVOICE {0}'.format(instance.id), #// subject 
                 company_text_content, # content or body 
                 settings.EMAIL_HOST_USER,
-                ['u12318958@tuks.co.za',
-                'unitendlela@gmail.com', 
-                'movers@untransport.co.za'], #// receipiant list 
+                [config('PERSONAL_EMAIL', cast = str),
+                config('COMPANY_EMAIL_ONE', cast = str), 
+                config('COMPANY_EMAIL_TWO', cast=str)], #// receipiant list 
             )
             
             #// attach email html 
