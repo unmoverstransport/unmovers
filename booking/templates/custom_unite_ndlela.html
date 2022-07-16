@@ -37,6 +37,17 @@
             color: black;
             margin: 0px;
         }
+
+        .customer-information{
+            margin: 0px;
+            padding: 0px;
+            font-weight: bold;
+        }
+        .customer-information span{
+            margin: 0px;
+            padding: 0px;
+            font-weight: normal;
+        }
     </style>
     <title>Unite Ndlela Transport Services</title>
 </head>
@@ -49,6 +60,12 @@
             <br>
             Please Allocate driver and contact customer for booking confirmation.
         </p>
+
+        <h3>Customer Information:</h3>
+        <p class="customer-information">Full Name:<span> {{full_name}}</span></p>
+        <p class="customer-information">Contact Numbers: <span> {{contact_numbers}}</span></p>
+        <p class="customer-information">Email Address: <span> {{email}}</span></p>
+        <br>
 
         <p style="margin: 0px; padding: 0px;">Regards</p>
         <p style="margin: 0px; padding: 0px;">Unite Ndlela Transport Services Admin</p>   

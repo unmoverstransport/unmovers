@@ -60,7 +60,12 @@ def send_invoice(sender, instance = None, created = False, **kwargs):
             
             
             #// send email to company 
-            company_payload = {"invoice_id": instance.id}
+            company_payload = {
+                "invoice_id": instance.id, 
+                "full_name": full_name,
+                "contact_numbers": instance.booker.mobile_number,
+                "email": instance.booker.email,
+                }
             
             #set html
             company_html_content = render_to_string("custom_unite_ndlela.html", company_payload)
