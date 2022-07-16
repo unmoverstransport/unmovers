@@ -169,7 +169,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Etc/GMT+2'
+TIME_ZONE = 'Africa/Harare'
 
 USE_I18N = True
 
