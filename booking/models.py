@@ -7,6 +7,8 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import get_user_model
 
+from django.utils import timezone
+
 # 3rd party imports 
 import uuid
 
@@ -69,8 +71,8 @@ class Booking(models.Model):
     
     
     # created at 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True, default=timezone.now)
     
     # overide the string method 
     def __str__(self):
